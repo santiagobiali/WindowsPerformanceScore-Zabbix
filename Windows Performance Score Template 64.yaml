@@ -1,0 +1,98 @@
+zabbix_export:
+  version: '6.4'
+  template_groups:
+    - uuid: 721284fdd5a5431490496fc0a7cbf410
+      name: Windows
+  templates:
+    - uuid: ad6029ec28b3405ba1daf343a02b0b78
+      template: 'Windows Performance Score'
+      name: 'Windows Performance Score'
+      groups:
+        - name: Windows
+      items:
+        - uuid: 628bdb78eeb64c91b8c7462dcc974113
+          name: 'CPU Performance Score'
+          type: ZABBIX_ACTIVE
+          key: 'wmi.get["Root\CIMV2","SELECT CPUScore FROM Win32_WinSAT"]'
+          delay: 1h
+          value_type: FLOAT
+          tags:
+            - tag: Application
+              value: WindowsPeformance
+          triggers:
+            - uuid: 30f7b1a66b8f4b78b32590f98e704164
+              expression: 'last(/Windows Performance Score/wmi.get["Root\CIMV2","SELECT CPUScore FROM Win32_WinSAT"])<{$CPUMINSCORE} and last(/Windows Performance Score/wmi.get["Root\CIMV2","SELECT CPUScore FROM Win32_WinSAT"])>0'
+              name: 'CPU Score is below recommended ({ITEM.VALUE} < {$CPUMINSCORE})'
+              priority: WARNING
+              manual_close: 'YES'
+        - uuid: a0d731ebf8f74ded99f1ec4f74844e85
+          name: 'Disk Performance Score'
+          type: ZABBIX_ACTIVE
+          key: 'wmi.get["Root\CIMV2","SELECT DiskScore FROM Win32_WinSAT"]'
+          delay: 1h
+          value_type: FLOAT
+          tags:
+            - tag: Application
+              value: WindowsPeformance
+          triggers:
+            - uuid: bd8a27fb108b42279cf459af0fd86942
+              expression: 'last(/Windows Performance Score/wmi.get["Root\CIMV2","SELECT DiskScore FROM Win32_WinSAT"])<{$DISKMINSCORE} and last(/Windows Performance Score/wmi.get["Root\CIMV2","SELECT DiskScore FROM Win32_WinSAT"])>0'
+              name: 'Disk Score is below recommended ({ITEM.VALUE} < {$DISKMINSCORE})'
+              priority: WARNING
+              manual_close: 'YES'
+        - uuid: 87abdc1afc91434f90f2e3d4d715255b
+          name: 'Graphics Performance Score'
+          type: ZABBIX_ACTIVE
+          key: 'wmi.get["Root\CIMV2","SELECT GraphicsScore FROM Win32_WinSAT"]'
+          delay: 1h
+          value_type: FLOAT
+          tags:
+            - tag: Application
+              value: WindowsPeformance
+          triggers:
+            - uuid: 3ed6966d69ad415b9c2542896232b550
+              expression: 'last(/Windows Performance Score/wmi.get["Root\CIMV2","SELECT GraphicsScore FROM Win32_WinSAT"])<{$GPUMINSCORE} and last(/Windows Performance Score/wmi.get["Root\CIMV2","SELECT GraphicsScore FROM Win32_WinSAT"])>0'
+              name: 'Graphics Score is below recommended ({ITEM.VALUE} < {$GPUMINSCORE})'
+              priority: WARNING
+              manual_close: 'YES'
+        - uuid: 7bb453dbea804b84896c8aa509033d25
+          name: 'Memory Performance Score'
+          type: ZABBIX_ACTIVE
+          key: 'wmi.get["Root\CIMV2","SELECT MemoryScore FROM Win32_WinSAT"]'
+          delay: 1h
+          value_type: FLOAT
+          tags:
+            - tag: Application
+              value: WindowsPeformance
+          triggers:
+            - uuid: 5cd051e2c7084214832cd3519c7dbea9
+              expression: 'last(/Windows Performance Score/wmi.get["Root\CIMV2","SELECT MemoryScore FROM Win32_WinSAT"])<{$MEMMINSCORE} and last(/Windows Performance Score/wmi.get["Root\CIMV2","SELECT MemoryScore FROM Win32_WinSAT"])>0'
+              name: 'Memory Score is below recommended ({ITEM.VALUE} < {$MEMMINSCORE})'
+              priority: WARNING
+              manual_close: 'YES'
+        - uuid: 953eb0c64a4e4aa98f8f72c5335ba68f
+          name: 'SPR Performance Score'
+          type: ZABBIX_ACTIVE
+          key: 'wmi.get["Root\CIMV2","SELECT WinSPRLevel FROM Win32_WinSAT"]'
+          delay: 1h
+          value_type: FLOAT
+          tags:
+            - tag: Application
+              value: WindowsPeformance
+          triggers:
+            - uuid: f864c9e99e284f858b9a3273108fa606
+              expression: 'last(/Windows Performance Score/wmi.get["Root\CIMV2","SELECT WinSPRLevel FROM Win32_WinSAT"])<{$SPRMINSCORE} and last(/Windows Performance Score/wmi.get["Root\CIMV2","SELECT WinSPRLevel FROM Win32_WinSAT"])>0'
+              name: 'SPR Score is below recommended ({ITEM.VALUE} < {$SPRMINSCORE})'
+              priority: WARNING
+              manual_close: 'YES'
+      macros:
+        - macro: '{$CPUMINSCORE}'
+          value: '8'
+        - macro: '{$DISKMINSCORE}'
+          value: '5.5'
+        - macro: '{$GPUMINSCORE}'
+          value: '4.5'
+        - macro: '{$MEMMINSCORE}'
+          value: '5.5'
+        - macro: '{$SPRMINSCORE}'
+          value: '4.5'
